@@ -38,6 +38,10 @@ export const Atem: MixerProtocol = {
                         mixerMessage: '',
                         label: 'RR',
                     },
+                    {
+                        mixerMessage: '',
+                        label: 'M',
+                    },
                 ],
                 // CHANNEL_OUT_GAIN: [{ mixerMessage: '' }],
                 // CHANNEL_VU?: Array<IMixerMessageProtocol>
@@ -65,6 +69,10 @@ export const Atem: MixerProtocol = {
                     {
                         mixerMessage: '',
                         label: 'RR',
+                    },
+                    {
+                        mixerMessage: '',
+                        label: 'M',
                     },
                 ],
                 // CHANNEL_OUT_GAIN: [{ mixerMessage: '' }],

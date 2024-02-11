@@ -37,7 +37,7 @@ export class AtemMixerConnection {
 
     constructor(
         private mixerProtocol: MixerProtocol,
-        public mixerIndex: number
+        public mixerIndex: number,
     ) {
         this._connection = new Atem()
 
@@ -70,7 +70,7 @@ export class AtemMixerConnection {
                     .data(error)
                     .error(
                         'Failed to connect to atem ' +
-                            state.settings[0].mixers[this.mixerIndex].deviceIp
+                            state.settings[0].mixers[this.mixerIndex].deviceIp,
                     )
             })
     }
@@ -79,8 +79,8 @@ export class AtemMixerConnection {
         const sourceToName: Record<string, string> = {
             ...Object.fromEntries(
                 Object.entries(this._connection.state.inputs).map(
-                    ([id, input]) => [id, input.shortName]
-                )
+                    ([id, input]) => [id, input.shortName],
+                ),
             ),
             '1301': 'Mic 1',
             '1302': 'Mic 2',
@@ -94,7 +94,7 @@ export class AtemMixerConnection {
 
                 let name = sourceToName[source]
                 this.setChannelLabel(this._sourceToChNo[Number(source)], name)
-            }
+            },
         )
 
         if (!this._firstConnection) return
@@ -137,7 +137,7 @@ export class AtemMixerConnection {
         this._connection.setFairlightAudioMixerSourceProps(
             this._chNoToSource[channelTypeIndex],
             this._sourceTracks[channelTypeIndex],
-            { gain: -1200 + 1800 * level }
+            { gain: -1200 + 1800 * level },
         )
     }
 
@@ -157,7 +157,7 @@ export class AtemMixerConnection {
                     mixOption: muteOn
                         ? FairlightAudioMixOption.Off
                         : FairlightAudioMixOption.On,
-                }
+                },
             )
         }
     }
@@ -177,7 +177,7 @@ export class AtemMixerConnection {
     updateAuxLevel(
         channelIndex: number,
         auxSendIndex: number,
-        auxLevel: number
+        auxLevel: number,
     ): void {
         return
     }
@@ -195,7 +195,7 @@ export class AtemMixerConnection {
     updateChannelSetting(
         channelIndex: number,
         setting: string,
-        value: string
+        value: string,
     ): void {
         return
     }
@@ -213,7 +213,7 @@ export class AtemMixerConnection {
             case 'LR':
                 this._connection.setFairlightAudioMixerInputProps(
                     this._chNoToSource[channelIndex],
-                    { activeConfiguration: FairlightInputConfiguration.Stereo }
+                    { activeConfiguration: FairlightInputConfiguration.Stereo },
                 )
                 if (pgmOn || pflOn) {
                     this._connection.setFairlightAudioMixerSourceProps(
@@ -221,7 +221,7 @@ export class AtemMixerConnection {
                         TrackIndex.Stereo,
                         {
                             mixOption: FairlightAudioMixOption.On,
-                        }
+                        },
                     )
                 }
                 this._sourceTracks[channelTypeIndex] = TrackIndex.Stereo
@@ -232,14 +232,14 @@ export class AtemMixerConnection {
                     {
                         activeConfiguration:
                             FairlightInputConfiguration.DualMono,
-                    }
+                    },
                 )
                 this._connection.setFairlightAudioMixerSourceProps(
                     this._chNoToSource[channelIndex],
                     TrackIndex.Right,
                     {
                         mixOption: FairlightAudioMixOption.Off,
-                    }
+                    },
                 )
                 if (pgmOn || pflOn) {
                     this._connection.setFairlightAudioMixerSourceProps(
@@ -247,7 +247,7 @@ export class AtemMixerConnection {
                         TrackIndex.Left,
                         {
                             mixOption: FairlightAudioMixOption.On,
-                        }
+                        },
                     )
                 }
                 this._sourceTracks[channelTypeIndex] = TrackIndex.Left
@@ -258,14 +258,14 @@ export class AtemMixerConnection {
                     {
                         activeConfiguration:
                             FairlightInputConfiguration.DualMono,
-                    }
+                    },
                 )
                 this._connection.setFairlightAudioMixerSourceProps(
                     this._chNoToSource[channelIndex],
                     TrackIndex.Left,
                     {
                         mixOption: FairlightAudioMixOption.Off,
-                    }
+                    },
                 )
                 if (pgmOn || pflOn) {
                     this._connection.setFairlightAudioMixerSourceProps(
@@ -273,11 +273,27 @@ export class AtemMixerConnection {
                         TrackIndex.Right,
                         {
                             mixOption: FairlightAudioMixOption.On,
-                        }
+                        },
                     )
                 }
 
                 this._sourceTracks[channelTypeIndex] = TrackIndex.Right
+                break
+            case 'M':
+                this._connection.setFairlightAudioMixerInputProps(
+                    this._chNoToSource[channelIndex],
+                    { activeConfiguration: FairlightInputConfiguration.Mono },
+                )
+                if (pgmOn || pflOn) {
+                    this._connection.setFairlightAudioMixerSourceProps(
+                        this._chNoToSource[channelIndex],
+                        TrackIndex.Stereo,
+                        {
+                            mixOption: FairlightAudioMixOption.On,
+                        },
+                    )
+                }
+                this._sourceTracks[channelTypeIndex] = TrackIndex.Stereo
                 break
         }
     }
@@ -292,29 +308,32 @@ export class AtemMixerConnection {
             this._connection.setFairlightAudioMixerSourceProps(
                 sourceNo,
                 this._sourceTracks[channel.channelTypeIndex],
-                { mixOption: FairlightAudioMixOption.On }
+                { mixOption: FairlightAudioMixOption.On },
             )
             this._connection.setFairlightAudioMixerSourceProps(
                 sourceNo,
                 this._sourceTracks[channel.channelTypeIndex],
                 {
                     faderGain: Math.round(
-                        Math.max(-10000, Math.min(1000, floatToDB(level) * 100))
+                        Math.max(
+                            -10000,
+                            Math.min(1000, floatToDB(level) * 100),
+                        ),
                     ),
-                }
+                },
             )
         } else {
             this._connection.setFairlightAudioMixerSourceProps(
                 sourceNo,
                 this._sourceTracks[channel.channelTypeIndex],
-                { mixOption: FairlightAudioMixOption.Off }
+                { mixOption: FairlightAudioMixOption.Off },
             )
             this._connection.setFairlightAudioMixerSourceProps(
                 sourceNo,
                 this._sourceTracks[channel.channelTypeIndex],
                 {
                     faderGain: 0,
-                }
+                },
             )
         }
     }
@@ -327,7 +346,7 @@ export class AtemMixerConnection {
                         assignedChannel.mixerIndex === this.mixerIndex &&
                         assignedChannel.channelIndex === channelIndex
                     )
-                }
+                },
             )
         })
     }
@@ -342,13 +361,13 @@ export class AtemMixerConnection {
         channelIndex: number,
         channel: Channel,
         fader: Fader,
-        source: FairlightAudioSource
+        source: FairlightAudioSource,
     ) {
         if ((source.properties.gain + 1200) / 1800 !== fader.inputGain) {
             // update gain
             this.setFaderGain(
                 channelIndex,
-                (source.properties.gain + 1200) / 1800
+                (source.properties.gain + 1200) / 1800,
             )
         }
         if (!channel.fadeActive) {
@@ -380,7 +399,7 @@ export class AtemMixerConnection {
                 // set fader level
                 this.setFaderLevel(
                     channelIndex,
-                    dbToFloat(source.properties.faderGain / 100)
+                    dbToFloat(source.properties.faderGain / 100),
                 )
             }
         }
@@ -389,7 +408,7 @@ export class AtemMixerConnection {
     private setFaderGain(
         faderIndex: number,
         gain: number,
-        update: boolean = true
+        update: boolean = true,
     ): void {
         store.dispatch({
             type: FaderActionTypes.SET_INPUT_GAIN,
@@ -401,7 +420,7 @@ export class AtemMixerConnection {
     private setMute(
         faderIndex: number,
         muteOn: boolean,
-        update: boolean = true
+        update: boolean = true,
     ): void {
         store.dispatch({
             type: FaderActionTypes.SET_MUTE,
@@ -413,7 +432,7 @@ export class AtemMixerConnection {
     private setFaderPgm(
         faderIndex: number,
         pgmOn: boolean,
-        update: boolean = true
+        update: boolean = true,
     ): void {
         store.dispatch({
             type: FaderActionTypes.SET_PGM,
@@ -433,7 +452,7 @@ export class AtemMixerConnection {
     private setFaderLevel(
         faderIndex: number,
         level: number,
-        update: boolean = true
+        update: boolean = true,
     ): void {
         store.dispatch({
             type: FaderActionTypes.SET_FADER_LEVEL,
@@ -445,7 +464,7 @@ export class AtemMixerConnection {
     private setChannelLabel(
         channelIndex: number,
         label: string,
-        update: boolean = true
+        update: boolean = true,
     ): void {
         store.dispatch({
             type: ChannelActionTypes.SET_CHANNEL_LABEL,
