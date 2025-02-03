@@ -298,7 +298,8 @@ export class LawoRubyMixerConnection {
                         store.dispatch({
                             type: FaderActionTypes.SET_PGM,
                             faderIndex: ch - 1,
-                            pgmOn: level > 0,
+                            pgmOn: level > this.mixerProtocol.channelTypes[typeIndex]
+                                .fromMixer.CHANNEL_OUT_GAIN[0].min,
                         })
 
                         global.mainThreadHandler.updatePartialStore(ch - 1)
@@ -504,14 +505,14 @@ export class LawoRubyMixerConnection {
             .getElementByPath(message)
             .then((element: any) => {
                 const v = typeof value === 'string' ? parseFloat(value) : value
-                if (element.contents.value === v) return // contents is already the same - a bit risky but yolo
+                if (element.contents.value === v) return { response: undefined, sentOk: false } // contents is already the same - a bit risky but yolo
 
                 logger.trace(`Sending out message: ${message}`)
                 return this.emberConnection.setValue(element, v)
             })
             .then((req) => req.response)
             .catch((error: any) => {
-                logger.data(error).error('Ember Error for ' + mixerMessage)
+                logger.data(error).error('Ember Error for ' + mixerMessage + ' -> ' + value)
             })
     }
 
