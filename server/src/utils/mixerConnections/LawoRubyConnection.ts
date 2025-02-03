@@ -298,7 +298,7 @@ export class LawoRubyMixerConnection {
                         store.dispatch({
                             type: FaderActionTypes.SET_PGM,
                             faderIndex: ch - 1,
-                            pgmOn: level > this.mixerProtocol.channelTypes[typeIndex]
+                            pgmOn: levelInDecibel > this.mixerProtocol.channelTypes[typeIndex]
                                 .fromMixer.CHANNEL_OUT_GAIN[0].min,
                         })
 

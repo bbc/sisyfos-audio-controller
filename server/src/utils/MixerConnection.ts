@@ -407,6 +407,8 @@ export class MixerGenericConnection {
                 channelIndex
             ].outputLevel === 0
         ) {
+        this.mixerConnection[mixerIndex].updateFadeIOLevel(channelIndex, 0)
+
             return
         }
         if (
