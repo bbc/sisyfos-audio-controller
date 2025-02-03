@@ -400,15 +400,15 @@ export class MixerGenericConnection {
         faderIndex: number,
         fadeTime: number
     ) => {
+        const isOnAir = state.faders[0].fader[faderIndex].pgmOn ||
+            state.faders[0].fader[faderIndex].voOn
+
         if (
-            !state.faders[0].fader[faderIndex].pgmOn &&
-            !state.faders[0].fader[faderIndex].voOn &&
+            !isOnAir &&
             state.channels[0].chMixerConnection[mixerIndex].channel[
                 channelIndex
             ].outputLevel === 0
         ) {
-        this.mixerConnection[mixerIndex].updateFadeIOLevel(channelIndex, 0)
-
             return
         }
         if (
@@ -434,15 +434,10 @@ export class MixerGenericConnection {
             channel: channelIndex,
             active: true,
         })
-        // If fadeTime is 0 - jump to level and don't use timer
-        if (fadeTime === 0) {
+        if (isOnAir && fadeTime === 0) {
+            // If fadeTime is 0 - jump to level and don't use timer
             this.jumpToLevel(mixerIndex, channelIndex, faderIndex)
-            return
-        }
-        if (
-            state.faders[0].fader[faderIndex].pgmOn ||
-            state.faders[0].fader[faderIndex].voOn
-        ) {
+        } else if (isOnAir) {
             this.fadeUp(mixerIndex, channelIndex, fadeTime, faderIndex)
         } else {
             this.fadeDown(mixerIndex, channelIndex, fadeTime)
