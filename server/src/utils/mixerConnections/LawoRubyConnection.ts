@@ -511,7 +511,7 @@ export class LawoRubyMixerConnection {
             })
             .then((req) => req.response)
             .catch((error: any) => {
-                logger.data(error).error('Ember Error ')
+                logger.data(error).error('Ember Error for ' + mixerMessage)
             })
     }
 
@@ -603,7 +603,7 @@ export class LawoRubyMixerConnection {
             )
             await response
         } catch (e) {
-            logger.data(e).error('Ember Error ')
+            logger.data(e).error('Ember Error while updating PFL State')
         }
     }
 
