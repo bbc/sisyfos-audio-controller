@@ -503,11 +503,11 @@ export class LawoRubyMixerConnection {
         this.emberConnection
             .getElementByPath(message)
             .then((element: any) => {
+                const v = typeof value === 'string' ? parseFloat(value) : value
+                if (element.contents.value === v) return // contents is already the same - a bit risky but yolo
+
                 logger.trace(`Sending out message: ${message}`)
-                return this.emberConnection.setValue(
-                    element,
-                    typeof value === 'string' ? parseFloat(value) : value
-                )
+                return this.emberConnection.setValue(element, v)
             })
             .then((req) => req.response)
             .catch((error: any) => {
